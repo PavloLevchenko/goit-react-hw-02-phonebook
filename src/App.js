@@ -15,8 +15,7 @@ class App extends Component {
     ],
     filter: '',
   };
-  onFormSubmit = event => {
-    const { name, number } = event;
+  onFormSubmit = ({ name, number }) => {
     const id = nanoid();
     this.setState(prevState => {
       const existName = name.toLowerCase();
