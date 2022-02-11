@@ -15,7 +15,7 @@ class App extends Component {
     ],
     filter: '',
   };
-  onFormSubmit = ({ name, number }) => {
+  onFormSubmit = ({ event, name, number }) => {
     const id = nanoid();
     this.setState(prevState => {
       const existName = name.toLowerCase();
@@ -23,6 +23,8 @@ class App extends Component {
       if (exist) {
         alert(`${name} is already in contacts.`);
         return { ...prevState };
+      } else {
+        event.target.reset();
       }
       return {
         contacts: [{ id, name, number }, ...prevState.contacts],
@@ -52,7 +54,7 @@ class App extends Component {
 
         <h2>Contacts</h2>
         <Filter handleFilterChange={this.setFilter} />
-        <ContactList contacts={filteredContacts} onDelete={this.onContactDelete} />
+        <ContactList contacts={filteredContacts} onContactDelete={this.onContactDelete} />
       </div>
     );
   }
