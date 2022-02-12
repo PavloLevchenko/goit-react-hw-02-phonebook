@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid';
 import ContactForm from 'ContactForm';
 import Filter from 'Filter';
 import ContactList from 'ContactList';
+import ContactItem from 'ContactItem';
 
 class App extends Component {
   state = {
@@ -17,28 +18,33 @@ class App extends Component {
   };
   onFormSubmit = ({ event, name, number }) => {
     const id = nanoid();
+    event.target.reset();
     this.setState(prevState => {
       const existName = name.toLowerCase();
       const exist = prevState.contacts.find(contact => contact.name.toLowerCase() === existName);
       if (exist) {
         alert(`${name} is already in contacts.`);
-        return { ...prevState };
-      } else {
-        event.target.reset();
+        return prevState;
       }
-      return {
-        contacts: [{ id, name, number }, ...prevState.contacts],
-      };
+      const contacts = [{ id, name, number }, ...prevState.contacts];
+      return { contacts };
     });
+    this.clearFilter();
   };
   onContactDelete = deletedId => {
     this.setState(prevState => ({
       contacts: prevState.contacts.filter(contact => contact.id !== deletedId),
     }));
+    this.clearFilter();
   };
   setFilter = event => {
     this.setState({
       filter: event.currentTarget.value.toLowerCase(),
+    });
+  };
+  clearFilter = clearInput => {
+    this.setState({
+      filter: '',
     });
   };
   onFilter = (contacts, filter) => {
@@ -53,8 +59,22 @@ class App extends Component {
         <ContactForm handleSubmit={this.onFormSubmit} />
 
         <h2>Contacts</h2>
-        <Filter handleFilterChange={this.setFilter} />
-        <ContactList contacts={filteredContacts} onContactDelete={this.onContactDelete} />
+        <Filter handleFilterChange={this.setFilter} value={this.state.filter} />
+        <ContactList>
+          {filteredContacts.map(contact => {
+            const { id, name, number } = contact;
+            return (
+              <ContactItem
+                key={id}
+                onDeleteClick={() => {
+                  this.onContactDelete(id);
+                }}
+                name={name}
+                number={number}
+              ></ContactItem>
+            );
+          })}
+        </ContactList>
       </div>
     );
   }

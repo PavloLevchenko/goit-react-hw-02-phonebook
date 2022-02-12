@@ -6,7 +6,6 @@ class ContactItem extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
     number: PropTypes.string.isRequired,
-    onDeleteClick: PropTypes.func.isRequired,
   };
   render() {
     const { name, number, onDeleteClick } = this.props;
